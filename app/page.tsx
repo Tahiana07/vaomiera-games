@@ -15,7 +15,7 @@ export default function Splash() {
   return (
     <div className="h-screen flex items-center justify-center bg-blue-900 text-white">
       <h1 className="text-3xl font-bold animate-pulse">
-        Mini jeu Vaomiera by VAK 🎉
+        Vaomiera by VAK 🎉
       </h1>
     </div>
   );
