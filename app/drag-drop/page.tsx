@@ -116,7 +116,7 @@ export default function DragDrop() {
       sensors={sensors}
       onDragEnd={(e) => {
         handleDragEnd(e);
-        setTimeout(() => router.push("/result"), 1000);
+        setTimeout(() => router.push("/result"), 10000);
       }}
     >
       <div className="p-4 space-y-6">
