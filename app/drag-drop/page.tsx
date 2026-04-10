@@ -6,7 +6,7 @@ import {
   useDroppable
 } from "@dnd-kit/core";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { dragItems, dropZones } from "@/data/dragData";
 import { useRouter } from "next/navigation";
 
@@ -25,7 +25,7 @@ function Draggable({ id, label }: any) {
       style={style}
       {...listeners}
       {...attributes}
-      className="p-3 bg-blue-400 text-white rounded-xl"
+      className="p-3 bg-blue-400 text-white rounded-xl cursor-grab"
     >
       {label}
     </div>
@@ -38,7 +38,7 @@ function Droppable({ id, label }: any) {
   return (
     <div
       ref={setNodeRef}
-      className={`p-4 rounded-xl ${
+      className={`p-4 rounded-xl border ${
         isOver ? "bg-green-300" : "bg-white"
       }`}
     >
@@ -49,15 +49,19 @@ function Droppable({ id, label }: any) {
 
 export default function DragDrop() {
   const router = useRouter();
-  const [score, setScore] = useState(
-    Number(localStorage.getItem("score") || 0)
-  );
+
+  const [score, setScore] = useState<number | null>(null);
+
+  useEffect(() => {
+    const savedScore = localStorage.getItem("score");
+    setScore(savedScore ? Number(savedScore) : 0);
+  }, []);
 
   const handleDragEnd = (event: any) => {
     const { active, over } = event;
 
-    if (active.id === over?.id) {
-      const newScore = score + 1;
+    if (over && active.id === over.id) {
+      const newScore = (score ?? 0) + 1;
       setScore(newScore);
       localStorage.setItem("score", String(newScore));
     }
@@ -71,9 +75,9 @@ export default function DragDrop() {
       }}
     >
       <div className="p-4 space-y-6">
-        
         <h1 className="text-xl font-bold">🧩 Ataovy mifanaraka</h1>
-        <p>Score: {score}</p>
+
+        <p>Score: {score ?? "..."}</p>
 
         <div className="flex gap-4 flex-wrap">
           {dragItems.map((item) => (
