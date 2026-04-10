@@ -16,6 +16,11 @@ export default function Home() {
     router.push("/quiz");
   };
 
+  const result = () => {
+
+    router.push("/result");
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6">
       <h1 className="text-2xl font-bold mb-4">🎮 Lalao Vaomiera</h1>
@@ -32,6 +37,13 @@ export default function Home() {
         className="bg-blue-500 text-white p-4 rounded-2xl w-full max-w-sm"
       >
         Hanomboka 🚀
+      </button>
+
+      <button
+        onClick={result}
+        className="bg-yellow-500 disabled:opacity-50 text-white p-4 m-2 rounded-2xl w-full max-w-sm"
+      >
+        Valiny 🏆
       </button>
     </div>
   );
