@@ -2,18 +2,18 @@ export const questions = [
   {
     question: "Inona no atao hoe Vaomiera?",
     options: [
+      "Vondrona mifampizara talenta",
       "Vondrona olona manana andraikitra",
-      "Kilasy",
-      "Lalao"
+      "Lalao any am-piangonana"
     ],
     answer: "Vondrona olona manana andraikitra"
   },
   {
     question: "Fa maninona no miditra vaomiera?",
     options: [
-      "Mianatra mandray andraikitra",
-      "Matory",
-      "Mihinana"
+      "Satria mahafinaritra",
+      "Mihinana sakafo miaraka",
+      "Mianatra mandray andraikitra"
     ],
     answer: "Mianatra mandray andraikitra"
   },
@@ -30,8 +30,8 @@ export const questions = [
     question: "Inona no ataon'ny Ara-batana?",
     options: [
       "Mikolo ny ara-batana",
-      "Mivavaka",
-      "Mianatra"
+      "Mivavaka ny ara-batana",
+      "Mianatra momba ny ara-batana"
     ],
     answer: "Mikolo ny ara-batana"
   },
