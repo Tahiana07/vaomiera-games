@@ -2,14 +2,21 @@
 
 import { useEffect, useState } from "react";
 
+type Player = {
+  name: string;
+  score: number;
+};
+
 export default function Result() {
-  const [players, setPlayers] = useState<any[]>([]);
+  const [players, setPlayers] = useState<Player[]>([]);
 
   useEffect(() => {
-    const name = localStorage.getItem("player");
+    const name = localStorage.getItem("player") || "Anonyme";
     const score = Number(localStorage.getItem("score") || 0);
 
-    const stored = JSON.parse(localStorage.getItem("ranking") || "[]");
+    const stored: Player[] = JSON.parse(
+      localStorage.getItem("ranking") || "[]"
+    );
 
     const updated = [...stored, { name, score }]
       .sort((a, b) => b.score - a.score)

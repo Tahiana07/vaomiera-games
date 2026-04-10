@@ -8,8 +8,11 @@ export default function Home() {
   const router = useRouter();
 
   const start = () => {
+    if (!name.trim()) return;
+
     localStorage.setItem("player", name);
     localStorage.setItem("score", "0");
+
     router.push("/quiz");
   };
 
