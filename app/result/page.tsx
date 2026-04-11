@@ -4,7 +4,7 @@ export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase";
+import { getSupabase } from "@/lib/supabase";
 
 type Player = {
   id?: string;
@@ -20,6 +20,7 @@ export default function Result() {
   // 🔥 Charger + ajouter UNE FOIS
   useEffect(() => {
     const run = async () => {
+      const supabase = getSupabase();
       const name = localStorage.getItem("player") || "Anonyme";
       const score = Number(localStorage.getItem("score") || 0);
 
@@ -47,6 +48,7 @@ export default function Result() {
 
   // ❌ Supprimer un joueur (DB)
   const deletePlayer = async (id: string) => {
+    const supabase = getSupabase();
     await supabase.from("ranking").delete().eq("id", id);
 
     const updated = players.filter((p) => p.id !== id);
@@ -55,6 +57,7 @@ export default function Result() {
 
   // 🧹 Tout supprimer (DB)
   const clearAll = async () => {
+    const supabase = getSupabase();
     await supabase.from("ranking").delete().neq("id", "");
 
     setPlayers([]);
