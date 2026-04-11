@@ -23,18 +23,16 @@ type ItemProps = {
 
 type AnswerMap = Record<string, string>;
 
-function Draggable({ id, label, disabled }: ItemProps & { disabled?: boolean }) {
-  const { attributes, listeners, setNodeRef } = useDraggable({
-    id,
-    disabled
-  });
+function Draggable({ id, label }: ItemProps) {
+  const { attributes, listeners, setNodeRef } = useDraggable({ id });
 
   return (
     <div
       ref={setNodeRef}
       {...listeners}
       {...attributes}
-      className="px-4 py-3 bg-blue-500 text-white rounded-2xl text-center shadow-md touch-none active:scale-95 transition"
+      style={{ touchAction: "none" }}
+      className="px-4 py-3 bg-blue-500 text-white rounded-2xl text-center shadow-md active:scale-95 transition"
     >
       {label}
     </div>
@@ -89,8 +87,8 @@ export default function DragDrop() {
     useSensor(PointerSensor),
     useSensor(TouchSensor, {
       activationConstraint: {
-        delay: 100,
-        tolerance: 5,
+        delay: 150,
+        tolerance: 8,
       },
     })
   );
@@ -159,7 +157,7 @@ export default function DragDrop() {
         </div>
 
         {/* DROP ZONES */}
-        <div className="flex-1 overflow-y-auto px-4 space-y-3">
+        <div className="flex-1 overflow-y-auto px-4 space-y-3 touch-pan-y">
           {dropZones.map((zone: ItemProps) => (
             <Droppable
               key={zone.id}
@@ -171,7 +169,7 @@ export default function DragDrop() {
         </div>
 
         {/* DRAG ITEMS */}
-        <div className="border-t bg-white p-3 max-h-[35vh] overflow-y-auto">
+        <div className="border-t bg-white p-3 max-h-[35vh] overflow-y-auto touch-pan-y">
           <div className="grid grid-cols-2 gap-3">
             {availableItems.map((item: ItemProps) => (
               <Draggable key={item.id} {...item} />
@@ -181,7 +179,6 @@ export default function DragDrop() {
 
       </div>
 
-      {/* 🔥 DRAG OVERLAY (clé du fix) */}
       <DragOverlay>
         {activeId ? (
           <div className="px-4 py-3 bg-blue-500 text-white rounded-2xl shadow-xl scale-105">
