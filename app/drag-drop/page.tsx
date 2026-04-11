@@ -8,7 +8,8 @@ import {
   useSensor,
   useSensors,
   PointerSensor,
-  TouchSensor
+  TouchSensor,
+  DragOverlay
 } from "@dnd-kit/core";
 
 import { useState, useEffect } from "react";
@@ -23,22 +24,14 @@ type ItemProps = {
 type AnswerMap = Record<string, string>;
 
 function Draggable({ id, label, disabled }: ItemProps & { disabled?: boolean }) {
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({
+  const { attributes, listeners, setNodeRef } = useDraggable({
     id,
     disabled
   });
 
-  const style = {
-    transform: transform
-      ? `translate(${transform.x}px, ${transform.y}px)`
-      : undefined,
-    opacity: disabled ? 0.4 : 1,
-  };
-
   return (
     <div
       ref={setNodeRef}
-      style={style}
       {...listeners}
       {...attributes}
       className="px-4 py-3 bg-blue-500 text-white rounded-2xl text-center shadow-md touch-none active:scale-95 transition"
@@ -86,8 +79,8 @@ export default function DragDrop() {
 
   const [score, setScore] = useState<number>(0);
   const [answers, setAnswers] = useState<AnswerMap>({});
+  const [activeId, setActiveId] = useState<string | null>(null);
 
-  // map id -> label (utile affichage)
   const itemsMap = Object.fromEntries(
     dragItems.map((item) => [item.id, item.label])
   );
@@ -111,15 +104,20 @@ export default function DragDrop() {
     localStorage.setItem("answers", JSON.stringify(answers));
   }, [answers]);
 
+  const handleDragStart = (event: any) => {
+    setActiveId(String(event.active.id));
+  };
+
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
+
+    setActiveId(null);
 
     if (!over) return;
 
     const activeId = String(active.id);
     const overId = String(over.id);
 
-    // empêcher double utilisation
     const alreadyUsed = Object.values(answers).includes(activeId);
     if (alreadyUsed) return;
 
@@ -133,9 +131,12 @@ export default function DragDrop() {
       setScore(newScore);
       localStorage.setItem("score", String(newScore));
     }
+
+    if (Object.keys(answers).length + 1 === dropZones.length) {
+      setTimeout(() => router.push("/home"), 1500);
+    }
   };
 
-  // items restants (non utilisés)
   const usedItems = Object.values(answers);
   const availableItems = dragItems.filter(
     (item) => !usedItems.includes(item.id)
@@ -144,24 +145,21 @@ export default function DragDrop() {
   return (
     <DndContext
       sensors={sensors}
-      onDragEnd={(e) => {
-        handleDragEnd(e);
-
-        // redirection si tout rempli | mbola tsy fantatra
-        if (Object.keys(answers).length + 1 === dropZones.length) {
-          setTimeout(() => router.push("/home"), 1500);
-        }
-      }}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
     >
-      <div className="p-4 max-w-md mx-auto space-y-6">
-        <h1 className="text-xl font-bold text-center">
-          🧩 Ataovy mifanaraka
-        </h1>
+      <div className="h-screen flex flex-col max-w-md mx-auto">
 
-        <p className="text-center font-medium">Score: {score}</p>
+        {/* HEADER */}
+        <div className="p-4">
+          <h1 className="text-xl font-bold text-center">
+            🧩 Ataovy mifanaraka
+          </h1>
+          <p className="text-center font-medium mt-2">Score: {score}</p>
+        </div>
 
-        {/* DROP ZONES (top) */}
-        <div className="space-y-3">
+        {/* DROP ZONES */}
+        <div className="flex-1 overflow-y-auto px-4 space-y-3">
           {dropZones.map((zone: ItemProps) => (
             <Droppable
               key={zone.id}
@@ -172,13 +170,25 @@ export default function DragDrop() {
           ))}
         </div>
 
-        {/* DRAG ITEMS (bottom) */}
-        <div className="grid grid-cols-2 gap-3 pt-4">
-          {availableItems.map((item: ItemProps) => (
-            <Draggable key={item.id} {...item} />
-          ))}
+        {/* DRAG ITEMS */}
+        <div className="border-t bg-white p-3 max-h-[35vh] overflow-y-auto">
+          <div className="grid grid-cols-2 gap-3">
+            {availableItems.map((item: ItemProps) => (
+              <Draggable key={item.id} {...item} />
+            ))}
+          </div>
         </div>
+
       </div>
+
+      {/* 🔥 DRAG OVERLAY (clé du fix) */}
+      <DragOverlay>
+        {activeId ? (
+          <div className="px-4 py-3 bg-blue-500 text-white rounded-2xl shadow-xl scale-105">
+            {itemsMap[activeId]}
+          </div>
+        ) : null}
+      </DragOverlay>
     </DndContext>
   );
 }
