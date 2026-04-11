@@ -98,4 +98,13 @@ export const questions = [
     ],
     answer: "Vaomieran'ny hetsika sy serasera"
   },
+  {
+    question: "Iza no miantso coach, manomana entraînement, rehefa Asabotsy maraina?",
+    options: [
+      "Vaomieran'ny ankizy kely",
+      "Vaomieran'ny fitaizana ara-batana",
+      "Vaomieran'ny zava-kanto"
+    ],
+    answer: "Vaomieran'ny fitaizana ara-batana"
+  },
 ];

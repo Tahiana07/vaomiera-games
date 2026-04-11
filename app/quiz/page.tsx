@@ -50,6 +50,7 @@ export default function QuizPage() {
       <ScoreBar score={score} />
 
       <QuizCard
+        key={index} // FIX sur index séléctionné dans l'état
         question={shuffled[index]}
         onAnswer={handleAnswer}
       />
